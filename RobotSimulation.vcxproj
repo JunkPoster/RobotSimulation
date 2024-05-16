@@ -89,6 +89,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\Users\TheNo\OneDrive\Desktop\Desktop\CLASSES\CISP400 - C++\Homework\.Final Project - VS\VS Proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -112,6 +113,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>C:\Users\TheNo\OneDrive\Desktop\Desktop\CLASSES\CISP400 - C++\Homework\.Final Project - VS\VS Proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -121,7 +123,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\TheNo\OneDrive\Desktop\Desktop\CLASSES\CISP400 - C++\Homework\.Final Project - VS\VS Proj;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColorText.h" />
@@ -132,6 +136,7 @@
     <ClInclude Include="RandNo.h" />
     <ClInclude Include="SimInspector.h" />
     <ClInclude Include="ValidateInput.h" />
+    <ClInclude Include="FormatText.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="log.txt" />

@@ -47,6 +47,9 @@
     <ClInclude Include="SimInspector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FormatText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="log.txt">

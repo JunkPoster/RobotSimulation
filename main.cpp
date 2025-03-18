@@ -4,18 +4,21 @@ Ian Featherston
 Professor Fowler, CISP400
 05/07/2024 - 05/16/2024
 
-Through countless hours and trial-and-error, I'm finally happy with this
-program. I had a fairly large 'SimInspector' class that supplmented the main
-menu and detailed the behind-the-scenes operations for the main mechanics
-like Breeding, Purging, Navigating, Scanning, etc.; however, I decided to
-remove it because it was too verbose and didn't add much to the actual
-program. Since it was primarily designed for debugging, it was pretty
-cluttered and difficult to follow.
+This was my final project for CISP400, "Object Oriented Programming in C++." 
+It's a simulation of a Robot population that evolves over time. The Robots
+have a set of Genes that determine their behavior, and they can move around
+a grid, collecting batteries to increase their fitness. The Robots can also
+reproduce, passing on their Genes to their offspring. The simulation runs for
+a set number of generations, and the population is evaluated at the end.
 
-I've tried my best to steer clear of using Macros, but I used one to
-supplement the Logger class to pass '__PRETTY_FUNCTION__' as 'FUNC'. I've also
-used a few global functions as helpers to various classes in place of macros,
-but I've tried to keep them to a minimum.
+We were required to submit it as one file, hence why everything is in here. I
+would have MUCH preferred to break it up into multiple files, but I did my best
+to keep it organized. 
+
+I've tried my best to steer clear of using Macros, but I
+used one to supplement the Logger to pass '__PRETTY_FUNCTION__' as 'FUNC'. 
+I've also used a few global functions as helpers to various classes in place 
+of macros, but I've tried to keep them to a minimum.
 
 NOTE: I originally used raw pointers to store the population of Robot objects.
 When checking all Logging activity I noticed that the vast majority of
@@ -71,6 +74,7 @@ enum SIMULATION_SETTINGS {
     PROGRESS_UPDATE_RATE = 5    // Progress-update Frequency (0 to disable)
 };
 
+
 /*===========================<CUSTOM EXCEPTIONS>=============================*/
 // This exception is thrown when trying to access an invalid index in Grid().
 struct grid_out_of_bounds : public std::exception {
@@ -80,6 +84,8 @@ struct grid_out_of_bounds : public std::exception {
         cout << "\n[GRID] ERROR: Invalid Index Requested! (" + arg + ")\n";
     }
 };
+
+
 /*===========================<CLASS DEFINITIONS>=============================*/
 
         /*===================<START OF UTILITIES>===================*/
@@ -114,6 +120,7 @@ public:
 
 // Global File-Handler Instance to ensure only one file is created
 LoggerFileHandler logfileHandler;
+
 
 // I would still very much like to break this logger class into smaller
 // pieces, but I'm happy with it for now.
@@ -207,10 +214,10 @@ class Logger {
         // If compiler is VisualStudio, adjust for class functions
         /* DEBUG: Remove this before submitting. If you're reading this...
             then I forgot. */
-#ifdef _MSC_VER 
+        #ifdef _MSC_VER 
         pos = str.find(" ");
         if (pos != string::npos) str = str.substr(pos + 1);
-#endif
+        #endif
 
         // Find Class name (if it exists).
         string prefix, suffix;
@@ -339,6 +346,7 @@ bool Logger::loggingEnabled = true;
 bool Logger::startOfProgram = true;
 string Logger::baseFunction = "";
 
+
 /*===================<TEXT FORMATTING SECTION>===================*/
 
 /*    ANSI Color Codes used in ColorText    */
@@ -372,6 +380,7 @@ enum Colors {
     RESET = 0
 };
 
+
 /*    ColorText Struct    */
 // Colorizes 'val', returning it as a string.
 struct ColorText {
@@ -388,6 +397,7 @@ struct ColorText {
         return oss.str();
     }
 };
+
 
 /*    AlignText Class    */
 struct AlignText {
@@ -447,6 +457,7 @@ struct AlignText {
         return length;
     }
 };
+
 
 /*    WrapText Class    */
 // Child class to AlignText, which wraps text at a specified width.
@@ -584,6 +595,7 @@ struct WrapText : public AlignText {
     }
 };
 
+
 /*    StatusBar Struct    */
 // Prints a colorized status/progress bar based on the numbers passed
 // I could definitely modularize this more, but I'm happy with it for now.
@@ -655,6 +667,7 @@ string COLOR(const T& val, Colors clr, Colors mod1 = RESET,
     Colors mod2 = RESET) {
     return ColorText().colorize(val, clr, mod1, mod2);
 }
+
 
 /*===================<OTHER UTILITIES>===================*/
 
@@ -729,7 +742,6 @@ struct Timer {
 };
 
 
-
 /*    RandNo Struct    */
 // Just retruns a random number between the two integers passed (lo - hi)
 struct RandNo {
@@ -739,7 +751,6 @@ struct RandNo {
         return num;
     }
 };
-
 
 
 /*    Grid Class    */
@@ -802,7 +813,6 @@ public:
         return *this;
     }
 };
-
 
 
 /*    ValidateInput Struct    */
@@ -892,6 +902,7 @@ struct ValidateInput {
         return userInput;
     }
 };
+
 /*===================<END OF UTILITIES>===================*/
 
 /***********************************
@@ -912,6 +923,7 @@ enum SymbolKeys {
     RIGHT = '>',
     RANDOM = '?'
 };
+
 
 /*==============================<STATS SECTION>==============================*/
 /*    GenerationStats Struct    */
@@ -1976,6 +1988,7 @@ int main() {
     return 0;
 }
 
+
 // Begins the Simulation. Separated into a standalone function so the Logger
 // displays accurate an sequence of events.
 void SimulationStarter() {
@@ -1984,6 +1997,7 @@ void SimulationStarter() {
     SimulationMenu sim;
     sim.mainMenu();
 }
+
 
 void ProgramGreeting() {
     Logger log(FUNC);

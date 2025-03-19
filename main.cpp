@@ -22,7 +22,7 @@
 
      Notes: 
             - Many of the settings can be adjusted in the SimulationSettings.h
-              file in the sim_modules/sim/ directory.
+              file in project directory.
 
 This was my final project for CISP400, "Object Oriented Programming in C++." 
 It's a simulation of a Robot population that evolves over time. The Robots

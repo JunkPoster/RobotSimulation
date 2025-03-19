@@ -1,3 +1,5 @@
+// This is a deprecated file, but it's what I used to debug the simulation.
+
 #pragma once
 /**********************
  *    SimInspector    *

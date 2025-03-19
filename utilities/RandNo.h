@@ -1,23 +1,24 @@
+/*============================================================================* 
+File: RandNo.h
+Desc: A simple struct that just returns a random number within a given range.
+*============================================================================*/
+
+#pragma once
+
 #include <iostream>
 #include <ctime>
+
 using namespace std;
 
-/**********************
-*    RandNo Struct    *
-**********************/
+/*    RandNo Struct    */
 // Just retruns a random number between the two integers passed (lo - hi)
-// INCLUSIVE
 struct RandNo {
-    RandNo() {}
-    
     // Return a Random integer between 'lo' and 'hi'
     int getRand(int lo, int hi) const {
         int num = rand() % (hi - lo + 1) + lo;
-        // Logging disabled because of the extreme amount of entries.
-        //LOGTIME("RandNo::getRand(" + to_string(num) + ")");
         return num;
     }
-    
+  /*
     bool ComponentTest() const {
         
         // Test Range
@@ -40,5 +41,5 @@ struct RandNo {
         }
         
         return true;
-    }
+    }*/
 };

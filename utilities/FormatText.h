@@ -1,58 +1,32 @@
+/*============================================================================*
+File: FormatText.h
+Desc: This file contains a collection of classes and functions that allow 
+    for the formatting of text in a console application. It includes 
+    the following classes:
+    - AlignText: Aligns text to the left/right/center of a specified width.
+    - WrapText: Wraps text at a specified width, with optional indentation.
+    - StatusBar: Prints a colorized status/progress bar based on the params.
+    - FormatText: Allows control of all Text-Altering classes in one object.
+    The file also contains a global function 'align()' that allows for the
+    alignment of text without creating an object of the FormatText class.
+
+NOTE: This file has seen a lot of iterations over multiple of my projects, but 
+I'm extremely happy with how it's turned out. 
+*============================================================================*/
+
+#pragma once
+
 #include <iostream>
 #include <iomanip>
 #include <vector>
 #include <string>
 #include <sstream>
 #include <algorithm>
+
+#include "ColorText.h"
+
 using namespace std;
 
-/*    ANSI Color Codes used in ColorText    */
-enum Colors {
-    // Foreground       
-    BLACK = 30,
-    RED = 31,
-    GREEN = 32,
-    YELLOW = 33,
-    BLUE = 34,
-    MAGENTA = 35,
-    CYAN = 36,
-    WHITE = 37,
-
-    // Background       
-    BLACKBG = 40,
-    REDBG = 41,
-    GREENBG = 42,
-    YELLOWBG = 43,
-    BLUEBG = 44,
-    MAGENTABG = 45,
-    CYANBG = 46,
-    WHITEBG = 47,
-
-    // Modifiers
-    BOLD = 1,
-    BRIGHT = 1,
-    UNDERLINE = 4,
-    INVERSE = 7,
-
-    RESET = 0
-};
-
-/*    ColorText Struct    */
-// Colorizes 'val', returning it as a string.
-struct ColorText {
-    // Template allows for varying datatypes. Modifiers are optional.
-    template<typename T> 
-    string colorize(const T& val, Colors colorCode, 
-        Colors modifier1 = RESET, Colors modifier2 = RESET) 
-    {
-        ostringstream oss;
-        oss << "\033["
-            << ((modifier1 == RESET) ? "" : (to_string(modifier1) + ";"))
-            << ((modifier2 == RESET) ? "" : (to_string(modifier2) + ";"))
-            << colorCode << "m" << val << "\033[" << RESET << "m";
-        return oss.str();
-    }
-};
 
 /*    AlignText Class    */
 struct AlignText {
@@ -82,12 +56,12 @@ struct AlignText {
             padRight = W - L;
             break;
         }
-
         // Return string with appropriate padding
         return string(padLeft, padChar) + str + string(padRight, padChar);
     }
 
-    string alignText(string str, char align, size_t W, char padChar = ' ') 
+    // Overloaded to cast 'width' to int for alignText()
+    string alignText(string str, char align, size_t W, char padChar = ' ')
         const {
         int intWidth = static_cast<int>(W);
         return AlignText().alignText(str, align, intWidth, padChar);
@@ -113,6 +87,7 @@ struct AlignText {
     }
 };
 
+
 /*    WrapText Class    */
 // Child class to AlignText, which wraps text at a specified width.
 struct WrapText : public AlignText {
@@ -126,7 +101,8 @@ struct WrapText : public AlignText {
         if (INDENT_AMT > 0) {
             INDENT = true;
             INDENT_AMT = indentAmt - 1;
-        } else {
+        }
+        else {
             INDENT = false;
             INDENT_AMT = 0;
         }
@@ -135,8 +111,8 @@ struct WrapText : public AlignText {
     // Overloaded to cast 'width' to size_t for wrapText()
     string wrapText(string str, char align, int tgtWidth, string fix = "\n")
         const {
-            size_t width = static_cast<size_t>(tgtWidth);
-            string newStr = wrapText(str, align, width, fix);
+        size_t width = static_cast<size_t>(tgtWidth);
+        string newStr = wrapText(str, align, width, fix);
         return newStr;
     }
 
@@ -153,7 +129,7 @@ struct WrapText : public AlignText {
         size_t length = visibleLength(str); // Counts visible characters
         string tempStr = str;               // Substringing of 'str'
         vector<string> cutStr;              // Stores substrings of 'tempStr'
-        
+
         // Calculate 'wraps', which is the number of lines needed.
         if (newlines > 0) wraps = length / (width - 2) + newlines + 5;
         else wraps = length / (width - 2) + 5;
@@ -162,7 +138,7 @@ struct WrapText : public AlignText {
         if (length < width && newlines == 0) return alignText(str, align, width);
 
         // Divide string near width, OR at '\n'.
-        for (int i = 0; i < wraps; i++) {
+        for (size_t i = 0; i < wraps; i++) {
 
             // Indenting Behavior
             if (!INDENT) { if (tempStr[0] == ' ') tempStr.replace(0, 1, ""); }
@@ -248,13 +224,16 @@ struct WrapText : public AlignText {
     }
 };
 
+
 /*    StatusBar Struct    */
 // Prints a colorized status/progress bar based on the numbers passed
 // I could definitely modularize this more, but I'm happy with it for now.
 struct StatusBar {
-    
+
     string statusBar(int cur, int max, int numBars) const {
-        string statusBar, bars = "";
+
+        string statusBar;
+        string bars = "";
 
         // Define Colors for each section 
         // I should be able to modularize this fairly easily
@@ -292,8 +271,10 @@ struct StatusBar {
 
 // Allows the control of all Text-Altering classes in one object
 struct FormatText : public ColorText, public WrapText, public StatusBar {
-    
-    FormatText(int indentAmt = 0) : WrapText(indentAmt) {}
+
+    FormatText(int indentAmt = 0) : WrapText(indentAmt) {
+        Logger().logTime(3, "FormatText Object Created.");
+    }
 
     // Clears Entire Screen
     void clearScreen() const { cout << "\033[2J\033[1;1H"; }
@@ -304,19 +285,7 @@ struct FormatText : public ColorText, public WrapText, public StatusBar {
     }
 };
 
-// Global Object
-FormatText ft;
-
 // Global function (instead of using a Macro)
-/* I'd prefer to just use the FormatText member function, but I was too far
-    into the project to refactor everything comortably. */
-string align(string str, char align, int W, char padChar = ' ') {
-    return ft.alignText(str, align, W, padChar);
-}
-
-// Global function (instead of using a Macro)
-template<typename T>
-string COLOR(const T& val, Colors color,
-    Colors modifier1 = RESET, Colors modifier2 = RESET) {
-    return ColorText().colorize(val, color, modifier1, modifier2);
+string static align(string str, char align, int W, char padChar = ' ') {
+    return FormatText().alignText(str, align, W, padChar);
 }
